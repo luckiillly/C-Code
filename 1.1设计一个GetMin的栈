@@ -1,1 +1,120 @@
 思路：使用两个栈，一个栈存data、一个栈存相关联的min；在存min值时有两种思路，一种是每一个data对应一个min；一种是data比原来的min小或等于才加入新的min；
+类实现的方法：Push、Pop、Getmin、Top
+
+方法一：data和min同大小，虽然增加了min的空间，但是简化了pop过程，节省了pop时间
+#include <iostream>
+#include <stack>
+using namespace std;
+class Minstack{
+	private:
+		stack<int> Data;
+		stack<int> Min;
+	public:
+		Minstack(){}
+		~Minstack(){}
+		void push(int num) {
+			if (Min.empty()) {
+				Min.push(num);
+			}
+			else
+			{
+				Min.push((Min.top() > num) ? num : Min.top()); //炫技 用了三目运算符
+			}
+			Data.push(num);
+		}
+		void pop() {
+			if (Data.empty() || Min.empty()) {
+				throw runtime_error("栈为空");
+			}
+			Data.pop();
+			Min.pop();
+		}
+		int top() {
+			if (Data.empty()) {
+				throw runtime_error("栈为空");
+			}
+			return Data.top();
+		}
+		int getmin() {
+			if (Min.empty()) {
+				throw runtime_error("栈为空");
+			}
+			return Min.top();
+		}
+};
+int main()
+{
+	Minstack stack1;
+	stack1.push(3);
+	cout << stack1.getmin() << endl; //3
+	stack1.push(4);
+	cout << stack1.getmin() << endl; //3
+	stack1.push(1);
+	cout << stack1.getmin() << endl; //1
+	cout << stack1.top() << endl;    //1
+	stack1.pop();
+	cout << stack1.getmin() << endl; //3
+
+	system("pause");
+	return 0;
+}
+
+方法二：min中只存小于等于原来的值，节省了min的空间，增加了pop的时间（相比于1方法，push、pop稍作修改，top、getmin没有改变）
+#include <iostream>
+#include <stack>
+using namespace std;
+class Minstack{
+	private:
+		stack<int> Data;
+		stack<int> Min;
+	public:
+		Minstack(){}
+		~Minstack(){}
+		void push(int num) {
+			if (Min.empty()) {
+				Min.push(num);
+			}
+			else if(num<=Min.top())
+			{
+				Min.push(num);
+			}
+			Data.push(num);
+		}
+		void pop() {
+			if (Data.empty() || Min.empty()) {
+				throw runtime_error("栈为空");
+			}
+			if (Data.top() == Min.top()) {
+				Min.pop();
+			}
+			Data.pop();
+		}
+		int top() {
+			if (Data.empty()) {
+				throw runtime_error("栈为空");
+			}
+			return Data.top();
+		}
+		int getmin() {
+			if (Min.empty()) {
+				throw runtime_error("栈为空");
+			}
+			return Min.top();
+		}
+};
+int main()
+{
+	Minstack stack1;
+	stack1.push(3);
+	cout << stack1.getmin() << endl; //3
+	stack1.push(4);
+	cout << stack1.getmin() << endl; //3
+	stack1.push(1);
+	cout << stack1.getmin() << endl; //1
+	cout << stack1.top() << endl;    //1
+	stack1.pop();
+	cout << stack1.getmin() << endl; //3
+
+	system("pause");
+	return 0;
+}
