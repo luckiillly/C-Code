@@ -1,0 +1,71 @@
+思路：两个栈stackpush、stackpop分别用来完成push和pop操作，有两点需要注意：stackpush要往stackpop中压入数据，必须一次性全部压入到stackpop；如果stackpop不为空，不能向stackpush压入数据
+左神java代码push没做stackpop不为空的处理，不知道为何
+#include <iostream>
+#include <stack>
+using namespace std;
+class StacktoQueue
+{
+public:
+	void push(int num) {
+		while (!stackpop.empty()) {
+			int value = stackpop.top();
+			stackpush.push(value);
+			stackpop.pop();
+		}
+		stackpush.push(num);
+	}
+	void pop() {
+		if (stackpop.empty() && stackpush.empty())
+		{
+			throw "Queue is empty!";
+		}
+		else if (stackpop.empty())
+		{
+			while (!stackpush.empty())
+			{
+				int temp = stackpush.top();
+				stackpush.pop();
+				stackpop.push(temp);
+			}
+		}
+		stackpop.pop();
+	}
+	int front() {
+		if (stackpop.empty() && stackpush.empty())
+		{
+			throw "Queue is empty!";
+		}
+		else if (stackpop.empty())
+		{
+			while (!stackpush.empty())
+			{
+				int temp = stackpush.top();
+				stackpush.pop();
+				stackpop.push(temp);
+			}
+		}
+		return stackpop.top();
+	}
+private:
+	stack<int> stackpush;
+	stack<int> stackpop;
+};
+int main()
+{
+	StacktoQueue test;
+	test.push(1);
+	test.push(2);
+	test.push(3);
+	cout << test.front() << endl; // 1
+	test.pop();
+	cout << test.front() << endl; // 2
+	test.pop();
+	test.push(4);
+	test.push(5);
+	cout << test.front() << endl; // 3
+	test.pop();
+	cout << test.front() << endl; // 4
+	test.pop();
+	system("pause");
+	return 0;
+}
