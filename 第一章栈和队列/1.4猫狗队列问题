@@ -1,0 +1,165 @@
+问题描述：给定一个宠物类、子类（狗类、猫类）实现以下队列结构
+ add：将猫或狗的实例放入队列
+ pollall：队列中的实例按照进队列顺序弹出
+ polldog:队列中的狗的实例按照进队列顺序弹出
+ pollcat：队列中的猫的实例按照进队列顺序弹出
+ isempty：检查队列中是否还有猫或狗的实例
+ isdogempty：检查队列中是否还有狗的实例
+ iscatempty：检查队列中是否还有猫的实例
+ 
+ 思路：两个队列，分别存猫狗，进队列时实例要有时间戳（可以在猫狗类中加入时间戳，但用户类一般不能改变，则新建含时间戳的类作为队列的参数）
+ 使用C++时两个注意事项：
+ 1、子类对象可以直接给父类赋值，但父类对象不能直接对子类赋值；
+ 解决：使用基类指针实现父类对象对子类赋值；或者类声明时直接使用指针结合强制转换实现类的转换。
+ 2、STL中queue.pop()不返回值
+ 
+ #include <iostream>
+#include <queue>
+#include<string>
+using namespace std;
+class Pet {
+	string type;
+public:
+	Pet(string type) {
+		this->type = type;
+	}
+	string getPetType(){
+		return this->type;
+	}
+};
+class Dog:public Pet{
+public:
+	Dog() :Pet("dog") {}
+};
+class Cat:public Pet {
+public:
+	Cat():Pet("cat"){}
+};
+class EnterPet {
+private:
+	Pet pet;
+	int count;
+public:
+	EnterPet(Pet pet, int count):pet(pet) {
+		this->count = count;
+	}
+	Pet getpet() {
+		return pet;
+	}
+	int getcount() {
+		return this->count;
+	}
+	string gettype() {
+		return pet.getPetType();
+	}
+};
+class DogCatQueue {
+private:
+	queue<EnterPet> DogQ;
+	queue<EnterPet> CatQ;
+	int count;
+public:
+	DogCatQueue():count(0) {}
+	
+	void add(Pet pet) {
+		if (pet.getPetType() == "dog") {
+			DogQ.push(EnterPet(pet, count++));
+		}
+		else if(pet.getPetType()=="cat")
+		{
+			CatQ.push(EnterPet(pet, count++));
+		}
+		else
+		{
+			throw runtime_error("宠物不是猫狗");
+		}
+	}
+	Pet pollall() {
+		if (!DogQ.empty() &&!CatQ.empty()) {
+			if (DogQ.front().getcount() < CatQ.front().getcount()) {
+				Pet temp = DogQ.front().getpet();
+				DogQ.pop();
+				return temp;
+			}
+			else
+			{
+				Pet temp = CatQ.front().getpet();
+				CatQ.pop();
+				return temp;
+			}
+		}
+		else 
+		{
+			if (!DogQ.empty()) {
+				Pet temp = DogQ.front().getpet();
+				DogQ.pop();
+				return temp;
+			}
+			else if(!CatQ.empty())
+			{
+				Pet temp = CatQ.front().getpet();
+				CatQ.pop();
+				return temp;
+			}
+			else
+			{
+				throw runtime_error("猫狗不存在");
+			}
+		}
+	}
+	Dog polldog() {
+		if (!DogQ.empty()) {
+			Pet temp = DogQ.front().getpet();
+			Dog temd;
+			Pet* pd = &temd;
+			*pd = temp;
+			DogQ.pop();
+			return temd;
+		}
+		else {
+			throw runtime_error("狗不存在");
+		}
+	}
+	Cat pollcat() {
+		if (!CatQ.empty()) {
+			Pet temp = CatQ.front().getpet();
+			Cat temc;
+			Pet* pc = &temc;
+			*pc = temp;
+			CatQ.pop();
+			return temc;
+		}
+		else
+		{
+			throw runtime_error("猫不存在");
+		}
+	}
+	bool isempty() {
+		if (DogQ.empty() && CatQ.empty())
+			return true;
+		return false;
+	}
+	bool isdogempty() {
+		return DogQ.empty();
+	}
+	bool iscatempty() {
+		return CatQ.empty();
+	}
+};
+int main() {
+	DogCatQueue test;
+	test.add(Dog());
+	test.add(Cat());
+	test.add(Cat());
+	test.add(Dog());
+	string abc=test.pollall().getPetType();
+	cout << abc << endl;
+	if (test.iscatempty())
+		cout << 1 << endl;
+	else
+	{
+		cout << 0 << endl;
+	}
+	system("pause");
+	return 0;
+}
