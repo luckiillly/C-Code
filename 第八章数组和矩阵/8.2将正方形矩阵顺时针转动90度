@@ -1,0 +1,47 @@
+题目：1个N*N的矩阵，顺时针旋转90度
+1 2 3 4
+5 6 7 8
+9 10 11 12
+13 14 15 16
+顺时针旋转90度
+13 9 5 1
+14 10 6 2
+15 11 7 3
+16 12 8 4
+思路：使用转圈打印的方法，一个友外圈到内圈旋转（传参时注意使用引用）
+#include<iostream>
+#include<vector>
+using namespace std;
+void spiraledge(vector<vector<int>> &array, int a, int b, int c, int d) {
+	int times = d - b;
+	for (int i = 0; i < times; i++) {
+		int temp = array[a][b + i];
+		array[a][b + i] = array[c - i][b];
+		array[c - i][b] = array[c][d - i];
+		array[c][d - i] = array[a + i][d];
+		array[a + i][d] = temp;
+	}
+}
+void spiral90(vector<vector<int>> &array) {
+	int ltx = 0, lty = 0;
+	int rbx = array.size() - 1, rby = array[0].size() - 1;
+	while (ltx < rbx) {
+		spiraledge(array, ltx++, lty++, rbx--, rby--);
+	}
+}
+void printmtrix(vector<vector<int>> array) {
+	for (unsigned i = 0; i < array.size(); i++) {
+		for (unsigned j = 0; j < array[0].size(); j++) {
+			cout << array[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+int main() {
+	vector<vector<int>> matrix = { {1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16} };
+	printmtrix(matrix);
+	spiral90(matrix);
+	printmtrix(matrix);
+	system("pause");
+	return 0;
+}
