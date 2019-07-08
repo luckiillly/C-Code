@@ -1,0 +1,48 @@
+题目： 1 2 3 4
+      5 6 7 8
+      9 10 11 12
+      打印结果：1 2 5 9 6 3 4 7 10 11 8 12
+思路：找到斜向的起点和终点，循环打印斜线上的点；（0，0）处A、B两个点A向右走，走到头向下走，B向下走，走到头向右走，则每一步就是一个斜线的起始点。
+#include<iostream>
+#include<vector>
+using namespace std;
+void printout(vector<vector<int>> &array, int a, int b, int c, int d, bool signal) {
+	if (signal) {
+		while (c >=a) {
+			cout << array[c--][d++] << " ";
+		}
+	}
+	else
+	{
+		while (a <= c) {
+			cout << array[a++][b--] << " ";
+		}
+	}
+}
+void printmtrixzigzag(vector<vector<int>> &array) {
+	int ax = 0, ay = 0;
+	int bx = 0, by = 0;
+	int cx = array.size() - 1, cy = array[0].size() - 1;
+	bool signal = true;
+	while (ax<=cx || ay<=cy) {
+		printout(array,ax,ay,bx,by,signal);
+		ay < cy ? ay++ : ax++;
+		bx < cx ? bx++ : by++;
+		signal = !signal;
+	}
+}
+void printmtrix(vector<vector<int>> array) {
+	for (unsigned i = 0; i < array.size(); i++) {
+		for (unsigned j = 0; j < array[0].size(); j++) {
+			cout << array[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+int main() {
+	vector<vector<int>> matrix = { {1,2,3,4},{5,6,7,8},{9,10,11,12} };
+	printmtrix(matrix);
+	printmtrixzigzag(matrix);
+	system("pause");
+	return 0;
+}
