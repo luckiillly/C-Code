@@ -1,0 +1,45 @@
+题目：矩阵的行、列数据已经排好
+0 1 2 5
+2 3 4 7
+4 4 4 8
+5 7 7 9
+查找数据K是否在矩阵中
+思路是：从右上角或者左下角开始检索，根据有序的特性，如果从右上角开始，K比当前数小，则向左检索，如果比当前数小，则向下检索。
+iscontainK为检索函数
+#include<iostream>
+#include<vector>
+using namespace std;
+bool iscontainK(vector<vector<int>> array, int K) {
+	int row = array.size() - 1;
+	int col = array[0].size() - 1;
+	int x = 0, y = col;
+	while (x < row + 1 && y >= 0) {
+		if (array[x][y] == K) {
+			return true;
+		}
+		else if(array[x][y]>K)
+		{
+			y--;
+		}
+		else
+		{
+			x++;
+		}
+	}
+	return false;
+}
+void printmtrix(vector<vector<int>> array) {
+	for (unsigned i = 0; i < array.size(); i++) {
+		for (unsigned j = 0; j < array[0].size(); j++) {
+			cout << array[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+int main() {
+	vector<vector<int>> matrix = { {0,1,2,5},{2,3,4,7},{4,4,4,8},{5,7,7,9} };
+	printmtrix(matrix);
+	cout << iscontainK(matrix,6) << endl;
+	system("pause");
+	return 0;
+}
