@@ -1,0 +1,113 @@
+题目：给定数组arr，arr中所有的值为正数，且不能重复。每个值代表一种面值的货币，可以重复使用，给定一个整数aim代表要找的钱，求组成aim最少货币数。
+变形：arr中所有值为正数，可以重复代表一张钱，每张钱只能用一次。
+两种方法的比较： 运行时间    占用内存
+      经典方法： 31ms       20064K
+      压缩空间： 23ms        488K
+经典动态规划方法：建立N*（aim+1）的数组plan，plan[i][j]代表使用arr[0]到arr[i]换j所需的张数
+                填表：plan[i][0]全填0 ； plan[0][j]根据j为arr[0]的整数倍，依次填写，其余全填max
+                状态转移方程：arr[i]能用则用，然后+1，否则是i-1的值。plan[i][j] = min(plan[i][j - arr[i]] + 1, plan[i - 1][j]);
+                时间复杂度o(n*aim) 空间复杂度o(n*aim)
+代码如下：
+int minexchange(vector<int> arr,int aim) {
+	if (arr.size() == 0 || aim < 0)
+		return -1;
+	int N = arr.size();
+	int max = INT32_MAX;
+	vector<vector<int>> plan(N, vector<int>(aim + 1));
+	for (int j = 1; j < aim + 1; j++) {
+		plan[0][j] = max;
+		if (j - arr[0] >= 0 && plan[0][j - arr[0]] != max) {
+			plan[0][j] = plan[0][j - arr[0]] + 1;
+		}
+	}
+	int left = 0;
+	for (int i = 1; i < N; i++) {
+		for (int j = 1; j < aim + 1; j++) {
+			left = max;
+			if (j - arr[i] >= 0 && plan[i][j - arr[i]] != max) {
+				left = plan[i][j - arr[i]] + 1;
+			}
+			plan[i][j] = min(left, plan[i - 1][j]);
+		}
+	}
+	return plan[N - 1][aim] != max ? plan[N - 1][aim] : -1;
+}
+变型题过程类似，只是状态转移方程不同：arr[i]可以用的情况下是在plan[i-1][j-arr[j]]上加1
+                                  plan[i][j] = min(plan[i-1][j - arr[i]] + 1, plan[i - 1][j]);
+              plan[0][j]的填表，plan[0][arr[0]]=1,其余全为max
+int minexchange(vector<int> arr,int aim) {
+	if (arr.size() == 0 || aim < 0)
+		return -1;
+	int N = arr.size();
+	int max = INT32_MAX;
+	vector<vector<int>> plan(N, vector<int>(aim + 1));
+	for (int j = 1; j < aim + 1; j++) {
+		plan[0][j] = max;
+		}
+	if(arr[0]<=aim)
+    plan[0][arr[0]]=1;
+	int left = 0;
+	for (int i = 1; i < N; i++) {
+		for (int j = 1; j < aim + 1; j++) {
+			left = max;
+			if (j - arr[i] >= 0 && plan[i-1][j - arr[i]] != max) {
+				left = plan[i-1][j - arr[i]] + 1;
+			}
+			plan[i][j] = min(left, plan[i - 1][j]);
+		}
+	}
+	return plan[N - 1][aim] != max ? plan[N - 1][aim] : -1;
+}
+
+空间压缩方法：实质是表规模缩小为min(M,N)以行或列更新表得到最值（但不能还原出路径，我觉得可以，左神书里表示不可以）
+             这道题只能缩小到aim+1
+             时间复杂度O(n*aim) 空间复杂度O(aim)
+代码：
+int minexchange(vector<int> arr,int aim) {
+	if (arr.size() == 0 || aim < 0)
+		return -1;
+	int N = arr.size();
+	int max = INT32_MAX;
+	vector<int> plan(aim + 1);
+	for (int j = 1; j < aim + 1; j++) {
+		plan[j] = max;
+		if (j - arr[0] >= 0 && plan[j - arr[0]] != max) {
+			plan[j] = plan[j - arr[0]] + 1;
+		}
+	}
+	int left = 0;
+	for (int i = 1; i < N; i++) {
+		for (int j = 1; j < aim + 1; j++) {
+			left = max;
+			if (j - arr[i] >= 0 && plan[j - arr[i]] != max) {
+				left = plan[j - arr[i]] + 1;
+			}
+			plan[j] = min(left, plan[j]);
+		}
+	}
+	return plan[aim] != max ? plan[aim] : -1;
+}
+变型题：
+int minexchange(vector<int> arr,int aim) {
+	if (arr.size() == 0 || aim < 0)
+		return -1;
+	int N = arr.size();
+	int max = INT32_MAX;
+	vector<int> plan(aim + 1);
+	for (int j = 1; j < aim + 1; j++) {
+		plan[j] = max;
+	}
+  if(arr[0]<=aim)
+    plan[0][arr[0]]=1;
+	int left = 0;
+	for (int i = 1; i < N; i++) {
+		for (int j = aim; j >0 ; j--) {          //这里要从后向前更新保证plan[j-arr[i]]为上一层的值
+			left = max;
+			if (j - arr[i] >= 0 && plan[j - arr[i]] != max) {
+				left = plan[j - arr[i]] + 1;
+			}
+			plan[j] = min(left, plan[j]);
+		}
+	}
+	return plan[aim] != max ? plan[aim] : -1;
+}
