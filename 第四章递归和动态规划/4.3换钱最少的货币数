@@ -7,6 +7,7 @@
                 填表：plan[i][0]全填0 ； plan[0][j]根据j为arr[0]的整数倍，依次填写，其余全填max
                 状态转移方程：arr[i]能用则用，然后+1，否则是i-1的值。plan[i][j] = min(plan[i][j - arr[i]] + 1, plan[i - 1][j]);
                 时间复杂度o(n*aim) 空间复杂度o(n*aim)
+VS下vector数组建立后初始值为0
 代码如下：
 int minexchange(vector<int> arr,int aim) {
 	if (arr.size() == 0 || aim < 0)
