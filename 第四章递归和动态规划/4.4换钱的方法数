@@ -31,7 +31,7 @@ int numexchange(vector<int> arr, int aim) {
 	}
 	for (int i = 1; i < N; i++) {
 		for (int j = 1; j < aim + 1; j++) {
-			dp[j] += j - arr[i] > 0 ? dp[j - arr[i]] : 0;
+			dp[j] += j - arr[i] >= 0 ? dp[j - arr[i]] : 0;
 		}
 	}
 	return dp[aim] % 1000000007;
