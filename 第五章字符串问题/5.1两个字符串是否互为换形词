@@ -1,0 +1,19 @@
+题目描述：给定两个字符串str1和str2，如果str1和str2中出现的字符种类出现的一样且每种字符出现的次数也一样，
+那么str1和str2互为变形词。请判断str1和str2是否为变形词。
+思路：
+1、ascii码 str[i]是一个字符 可以隐式转为int 对应的ASCII码值
+2、使用桶的方法，或者是哈希函数对应计数。
+bool exBx(string str1,string str2) {
+	if (str1.size() != str2.size())
+		return false;
+	int arr[256] = {0};
+	for (int i = 0; i < str1.size(); i++) {
+		arr[str1[i]]++;
+	}
+	for (int j = 0; j < str2.size(); j++) {
+		arr[str2[j]]--;
+		if (arr[str2[j]] < 0)
+			return false;
+	}
+	return true;
+}
