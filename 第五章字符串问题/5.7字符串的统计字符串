@@ -1,0 +1,36 @@
+题目描述：给定一个字符串str，返回str的统计字符串。例如“aaabbbbcccd”的统计字符串为“a_3_b_4_c_3_d_1”。
+代码：
+#include<string>
+#include<iostream>
+using namespace std;
+
+string Tgstr(string str) {
+	int length = str.size();
+	string result = "";
+	int num = 1;
+	for (int i = 1; i < length; i++) {
+		if (str[i] != str[i - 1]) {
+			result += str[i - 1];
+			result += "_";
+			result += to_string(num);
+			result += "_";
+			num = 1;
+		}
+		else
+		{
+			num++;
+		}
+	}
+	result += str[length - 1];
+	result += "_";
+	result += to_string(num);
+	return result;
+}
+int main() {
+	string str;
+	cin >> str;
+	string result = Tgstr(str);
+	cout << result << endl;
+	system("pause");
+	return 0;
+}
