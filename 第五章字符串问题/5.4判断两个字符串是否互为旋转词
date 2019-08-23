@@ -1,0 +1,61 @@
+题目描述：如果一个字符串为str，把字符串的前面任意部分挪到后面形成的字符串交str的旋转词。
+比如str=“12345”，str的旋转串有“12345”、“45123”等等。给定两个字符串，判断是否为旋转词。
+思路：strr=str1+str1,判断str2是否在strr中
+KMP：
+vector<int> getnextarray(string str) {
+	vector<int> next(str.size());
+	next[0] = -1;
+	if (str.size() != 1) {
+		int pos = 2, cn = 0;
+		next[1] = 0;
+		while (pos < str.size())
+		{
+			if (str[pos - 1] == str[cn])
+				next[pos++] = ++cn;
+			else if (cn > 0)
+				cn = next[cn];
+			else
+			{
+				next[pos++] = 0;
+			}
+		}
+
+	}
+	return next;
+}
+bool kmp(string str1, string str2) {
+	vector<int> next = getnextarray(str2);
+	int i = 0, j = 0;
+	while (i < str1.size() && j < str2.size()) {
+		if (str1[i] == str2[j]) {
+			j++; 
+			i++;
+		}
+		else if(next[j]=-1)
+		{
+			i++;
+		}
+		else
+		{
+			j = next[j];
+		}
+	}
+	return j == str2.size() ? i - j : -1;
+	}
+暴力：
+bool Xuanzhuan(string str1,string str2) {
+	if (str1.size() != str2.size())
+		return false;
+	string strr = str1 + str1;
+	for (int i = 0, j = 0; i < strr.size(); i++) {
+		for (j = 0; j < str2.size(); j++) {
+			if (strr[i + j] != str2[j]) {
+				break;
+			}
+		}
+		if (j = str2.size()) {
+			return true;
+		}
+	}
+	return false;
+}
